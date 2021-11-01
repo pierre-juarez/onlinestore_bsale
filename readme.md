@@ -22,7 +22,7 @@ Link de la demo: <a href="https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/c
 
 ## Desktop
 
-![Versión Desktop](img/screenshots/bsaledemo.png?raw=true "Demo Versión Desktop")
+![Versión Desktop](catalogo/img/screenshots/bsaledemo.png?raw=true "Demo Versión Desktop")
 
 
 ## Créditos
