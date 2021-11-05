@@ -117,10 +117,21 @@
 			    </a>
 
                     <div class="flex items-center" id="store-nav-content">
-                        <div class="flex items-center border-b border-indigo-500 py-2">
-                            <input id="txtBuscador" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Buscar por" aria-label="Buscador">
+                        <div class="flex items-center py-2">
+                            <div class="flex border-2 rounded">
+                                <input type="text" class="px-4 py-2 w-80 outline-none border border-r-0 focus:border-indigo-500" id="txtBuscador" placeholder="Buscar por...">
+                                <button type="button" title="Buscar" class="flex items-center justify-center px-4 text-blue-700 font-semibold py-2 px-4 border  border-indigo-500" onclick="searchParams();">
+                                    <svg class="w-6 h-6 text-gray-600" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <!-- <input id="txtBuscador" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Buscar por" aria-label="Buscador"> -->
                         </div>
                     </div>
+                    
               </div>
             </nav>
 

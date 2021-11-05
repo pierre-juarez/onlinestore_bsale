@@ -28,6 +28,12 @@
 					header("HTTP/1.1 200 hay datos");
 					echo json_encode($sql->fetchAll());
 					exit;			
+		}else if(isset($_GET['allcategories'])){					
+					$sql = $pdo->prepare("SELECT * FROM category ORDER BY name");					
+					$sql->execute();
+					$sql->setFetchMode(PDO::FETCH_ASSOC);
+					header("HTTP/1.1 200 hay datos");
+					echo json_encode($sql->fetchAll());
 		}else{					
 					$sql = $pdo->prepare("SELECT * FROM product ORDER BY price ASC ");
 					$sql->execute();
