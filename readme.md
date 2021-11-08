@@ -13,6 +13,10 @@ _Desarrollo, despliegue y uso de una API de **/Consulta de Productos**  de  [BSA
 - Ordenamiento por precio (mayor o menor).
 - Ordenamiento por páginas.
 
+## Desktop
+
+![Versión Desktop](catalogo/img/screenshots/bsaledemo.png?raw=true "Demo Versión Desktop")
+
 
 _Toda la documentación y explicación a detalle, se encuentra dentro de los propios archivos._
 
@@ -71,7 +75,7 @@ Ofrece al usuario la posibilidad de buscar productos a través de un campo de en
 
 <hr>
 
-# Cómo instalar/ejecutar
+## Cómo instalar/ejecutar
 
 ### Prerequisitos
 - Tener instalado XAMP o cualquier servidor APACHE
@@ -90,10 +94,6 @@ cd onlinestore_bsale
 ## Running deployments
 * Frontend: https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/catalogo/
 * Backend: https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/
-
-## Desktop
-
-![Versión Desktop](catalogo/img/screenshots/bsaledemo.png?raw=true "Demo Versión Desktop")
 
 
 ## Créditos

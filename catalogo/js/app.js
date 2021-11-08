@@ -141,6 +141,7 @@ function orderProduct(){
  */
 function changeCategory(category = null){
 
+    $txtBuscador.value = "";
     let categorys = document.querySelectorAll(".category"), div, page1, pages;
 
     $cbxOrder.selectedIndex = 0;
@@ -229,9 +230,11 @@ function searchParams(){
     let valor = $txtBuscador.value;
     if(valor !== '' || valor === ' '){ //Solo realizamos la busqueda si los parametros no están vaciós
         getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/search/${valor}`);
+        $pagination.style.display = 'none';
     }else{ //De lo contrario pintamos los productos, y seleccianamos la primera categoría (TODOS), esto cuando el usuario borra los campos de su busqueda
         getProduct();
         changeCategory();
+        $pagination.style.display = 'flex';
     }
 }
 
