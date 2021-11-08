@@ -38,8 +38,7 @@
 				$sql->bindParam(':product',$search, PDO::PARAM_STR);
 				$sql->execute();									
 			}else if($param1 === 'page'){
-								
-								
+																
 				$start = ($param2 - 1) * $nro_items;
 
 				$sql = $pdo->prepare("SELECT * FROM product ORDER BY price ASC LIMIT ".$start.",".$nro_items);
