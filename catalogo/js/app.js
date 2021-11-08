@@ -5,6 +5,7 @@ const $pagination = document.querySelector("#pagination");
 const $spnCountProducts = document.querySelector("#spnCountProducts");
 const $txtBuscador = document.querySelector("#txtBuscador");
 
+
 /**
  * Función que trae e imprime las categorías desde la API, por default imprime todos los productos, con la categoría TODOS seleccionado
  */
@@ -15,15 +16,45 @@ getCategories();
  * función "printFilterCategory"
  */
 function getCategories(){    
-    const api_url = 'https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/?allcategories';
+    const api_url = 'https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/allcategories';
     fetch(api_url)
     .then(response => response.json())
     .then((category) => {
-        printFiltersCategories(category);       
+        printFiltersCategories(category); 
+        printPages();              
     })
     .catch(err => console.log(err));
 }
 
+/**
+ * Función que imprime las categorías traídas desde la APIS
+ * @param {object} categories Categorías traídas desde la BD en formato de objeto
+ */
+ function printFiltersCategories(categories){
+
+    $containerFilters.innerHTML = `
+    <a id="todos" class="category cursor-pointer rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" onclick="changeCategory();">
+        <div class="py-2 px-8 bg-indigo-100 text-indigo-700 rounded-full">
+            <p>Todos</p>
+        </div>
+    </a>
+    `;
+
+    categories.forEach((element) => {
+        $containerFilters.innerHTML += `
+        <a id="category-${(element.id)}" class="category cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" onclick="changeCategory(this.id);" data-id-category="${element.id}">
+            <div class="py-2 px-8 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full ">
+                <p>${capitalizarPrimeraLetra(element.name)}</p>
+            </div>
+        </a>
+        `
+    });
+
+
+    /** Una vez cargadas todas las categorías traemos TODOS los productos */
+    getProduct();    
+
+}
 
 /**
  * Función que consulta la API, recibe los datos, y los proceso e imprime con la función "renderProduct"
@@ -63,9 +94,10 @@ function renderProduct(product, order){
     let countProducts = Object.keys(product).length,
         url_image,
         discount,
+        price_format,
         symbol_money = "S./"; 
                         
-    $spnCountProducts.innerHTML = `(${countProducts}) productos encontrados`;
+    $spnCountProducts.innerHTML = `Mostrando (${countProducts}) productos`;
     $spnCountProducts.style.display = 'block'; //Mostramos la paginación, la cuál no pude terminar, mil disculpas por eso
 
     product.forEach(product => {       
@@ -93,50 +125,14 @@ $cbxOrder.addEventListener('change',orderProduct);
 /**
  * Función que se ejecuta al seleccionar un nuevo filtro de orden para los productos, puede ser MAYOR PRECIO ó MENOR PRECIO
  */
-function orderProduct(){
-    // $cbxOrder.value => lower_price, higher_price
+function orderProduct(){    
     if($cbxOrder.value === 'higher_price'){
         getProduct(JSON.parse(localStorage.getItem("api_url")),'asc');
     }else{
         getProduct(JSON.parse(localStorage.getItem("api_url")),'desc');
-
-    }
-    console.log($cbxOrder.value);
+    }    
 }
 
-/**
- * Función que imprime las categorías, aún no las he traído de BD, así que se han colocado en un array y ordenado por 
- * el elemento "index" para agregarle un atributo que puede ser reemplezado por su respectivo ID más
- * adelante
- */
-function printFiltersCategories(categories){
-
-    
-    console.log(categories);
-    console.log(typeof(categories));
- 
-
-    $containerFilters.innerHTML = `
-    <a id="todos" class="category cursor-pointer rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" onclick="changeCategory();">
-        <div class="py-2 px-8 bg-indigo-100 text-indigo-700 rounded-full">
-            <p>Todos</p>
-        </div>
-    </a>
-    `;
-
-    categories.forEach((element) => {
-        $containerFilters.innerHTML += `
-        <a id="category-${(element.id)}" class="category cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" onclick="changeCategory(this.id);" data-id-category="${element.id}">
-            <div class="py-2 px-8 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full ">
-                <p>${capitalizarPrimeraLetra(element.name)}</p>
-            </div>
-        </a>
-        `
-    });
-
-    getProduct();    
-
-}
 
 /**
  * Función que retorna los productos filtrados por CATEGORIA SELECCIONADA, obtenidos por el ID de la misma
@@ -145,11 +141,10 @@ function printFiltersCategories(categories){
  */
 function changeCategory(category = null){
 
+    let categorys = document.querySelectorAll(".category"), div, page1, pages;
+
     $cbxOrder.selectedIndex = 0;
     
-    let categorys = document.querySelectorAll(".category"), div;
-    
-
     categorys.forEach(element => {           
         div = document.querySelector('#'+element.id+' div');          
         div.classList.remove('bg-indigo-100');
@@ -161,15 +156,32 @@ function changeCategory(category = null){
         document.querySelector("#"+category+" div").classList.add('text-indigo-700');
         document.querySelector("#"+category+" div").classList.add('bg-indigo-100');        
         let id_category = document.getElementById(''+category+'').getAttribute('data-id-category'); // foto.jpg        
-        getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/?category=${id_category}`);
+        getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/category/${id_category}`);
         $pagination.style.display = 'none';
         return;
 
     }
 
     div = document.querySelector("#todos div");
+    page1 = document.querySelector("#page1");
+    pages = document.querySelectorAll(".page");
+
     div.classList.add('text-indigo-700');
     div.classList.add('bg-indigo-100');
+
+    pages.forEach(element => {                 
+        divpage = document.querySelector('#'+element.id);          
+        divpage.classList.add('bg-gray-200');
+        divpage.classList.add('text-gray-700');
+        divpage.classList.remove('bg-blue-400');
+        divpage.classList.remove('text-white');
+    });
+    
+    page1.classList.add('bg-blue-400');
+    page1.classList.add('text-white');
+    page1.classList.remove('bg-gray-200');
+    page1.classList.remove('text-gray-700');
+
     getProduct();    
     $pagination.style.display = 'flex';    
 
@@ -199,12 +211,15 @@ function sortJSON(data, key, orden) {
 }
 
 
-
+/**
+ * Función que se valida si en el texto buscar se ha clickeado "Enter"
+ */
 $txtBuscador.addEventListener('keyup',function(e){ 
     if(e.keyCode === 13){ //Si detecta el keyCode = 13, se ha presionado el enter, e iniciamos la busqueda
         searchParams();
     }
  });
+
 
 /**
  * Función que realiza la búsquedad de productos según el TEXTO ingresado por el usuario
@@ -213,7 +228,7 @@ $txtBuscador.addEventListener('keyup',function(e){
 function searchParams(){
     let valor = $txtBuscador.value;
     if(valor !== '' || valor === ' '){ //Solo realizamos la busqueda si los parametros no están vaciós
-        getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/?search=${valor}`);
+        getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/search/${valor}`);
     }else{ //De lo contrario pintamos los productos, y seleccianamos la primera categoría (TODOS), esto cuando el usuario borra los campos de su busqueda
         getProduct();
         changeCategory();
@@ -227,4 +242,55 @@ function searchParams(){
  */
 function capitalizarPrimeraLetra(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Función que trae el número de páginas desde la API y las imprime en pantalla para el filtrado necesario
+ */
+function printPages(){
+    fetch('https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/nropages')
+    .then(response => response.json())
+    .then((nropages) => {
+        $pagination.innerHTML = '';
+        for (let i = 0; i < nropages; i++) {            
+            $pagination.innerHTML += `
+            <a id="page${i+1}" onclick="changePage(this.id);" class="cursor-pointer px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-blue-400 hover:text-white page">
+                ${i+1}
+            </a>`        
+        }
+        changeCategory();
+    })
+    .catch(err => console.log(err));
+
+}
+
+/**
+ * Función que muestra los resultados de la API según número de página
+ * @param {string} id Id de la página seleccionada
+ */
+function changePage(id){
+    
+    let page = document.querySelector("#"+id), 
+        pages = document.querySelectorAll(".page"),
+        divpage, pageid = id.slice(-1);
+        
+    pages.forEach(element => {                 
+        divpage = document.querySelector('#'+element.id);          
+        divpage.classList.add('bg-gray-200');
+        divpage.classList.add('text-gray-700');
+        divpage.classList.remove('bg-blue-400');
+        divpage.classList.remove('text-white');
+    });
+
+    page.classList.add('bg-blue-400');
+    page.classList.add('text-white');
+    page.classList.remove('bg-gray-200');
+    page.classList.remove('text-gray-700');
+
+    if(pageid === 1){
+        getProduct();
+    }else{
+        getProduct(`https://upgindustrial.unmsm.edu.pe/onlinestore_bsale/api/page/${pageid}`);
+    }
+   
 }
